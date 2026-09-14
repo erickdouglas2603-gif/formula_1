@@ -5,9 +5,14 @@ on:
     branches: [main, dev]
   pull_request:
     branches: [main, dev]
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -24,6 +29,9 @@ jobs:
         with:
           python-version-file: ".python-version"
           cache: poetry
+
+      - name: Check poetry.lock is in sync with pyproject.toml
+        run: poetry check --lock
 
       - name: Install dependencies
         run: poetry install --with dev

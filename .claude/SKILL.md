@@ -439,11 +439,16 @@ poetry run task dashboard     # equivale a: poetry run streamlit run dashboard/a
 ## 16. Integração contínua (GitHub Actions)
 
 - Workflow em `.github/workflows/ci.yml`, disparado em `push` e `pull_request`
-  para as branches `main` e `dev`.
+  para as branches `main` e `dev`, e manualmente via `workflow_dispatch`.
+  `concurrency` cancela runs anteriores da mesma branch/PR quando um novo
+  commit chega, para não gastar minutos de CI à toa.
 - Roda, nesta ordem, sobre a versão de Python fixada em `.python-version`:
-  `poetry install --with dev`, `poetry run task lint`,
-  `poetry run task format-check`, `poetry run task test` (com a cobertura
-  mínima de 50%, seção 10) e `poetry run task docs` (build `--strict`).
+  `poetry check --lock` (garante que `poetry.lock` está sincronizado com
+  `pyproject.toml` — pega o caso de alguém editar `pyproject.toml` sem rodar
+  `poetry lock`, proibido pela seção 6), `poetry install --with dev`,
+  `poetry run task lint`, `poetry run task format-check`,
+  `poetry run task test` (com a cobertura mínima de 50%, seção 10) e
+  `poetry run task docs` (build `--strict`).
 - Qualquer alteração que quebre lint, formatação, testes/cobertura ou o build
   da documentação falha a CI — corrija localmente com os mesmos comandos antes
   de abrir/atualizar um PR.
