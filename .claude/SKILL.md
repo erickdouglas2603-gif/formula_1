@@ -155,7 +155,7 @@ Regras:
   já instalada não resolve o problema (evite duas libs para a mesma finalidade, ex.:
   duas libs de HTTP client).
 - Dependências atuais do grupo `dev`: `ruff`, `pytest`, `pytest-cov`, `mkdocs`,
-  `mkdocs-material`, `mkdocstrings[python]`, `poethepoet` (atalhos de comando —
+  `mkdocs-material`, `mkdocstrings[python]`, `taskipy` (atalhos de comando —
   ver seção 14).
 - Dependências atuais do grupo `notebooks` (usadas só em `notebooks/`, nunca
   importadas por `src/f1/`): `jupyter`, `matplotlib`.
@@ -420,19 +420,36 @@ poetry run mkdocs serve
 poetry run mkdocs build --strict
 ```
 
-### Atalhos (Poe — `[tool.poe.tasks]` em `pyproject.toml`)
+### Atalhos (Taskipy — `[tool.taskipy.tasks]` em `pyproject.toml`)
 
 Equivalentes aos comandos de lint/testes/docs acima, para digitar menos no dia a
 dia. Não substituem os comandos originais como critério de "pronto" (seção 13) —
 são apenas atalhos para os mesmos comandos:
 
 ```bash
-poetry run poe test      # equivale a: poetry run pytest
-poetry run poe lint      # equivale a: poetry run ruff check .
-poetry run poe format    # equivale a: poetry run ruff format .
-poetry run poe docs      # equivale a: poetry run mkdocs build --strict
-poetry run poe dashboard # equivale a: poetry run streamlit run dashboard/app.py
+poetry run task test          # equivale a: poetry run pytest
+poetry run task lint          # equivale a: poetry run ruff check .
+poetry run task format        # equivale a: poetry run ruff format .
+poetry run task format-check  # equivale a: poetry run ruff format --check .
+poetry run task docs          # equivale a: poetry run mkdocs build --strict
+poetry run task docs-serve    # equivale a: poetry run mkdocs serve
+poetry run task dashboard     # equivale a: poetry run streamlit run dashboard/app.py
 ```
+
+## 16. Integração contínua (GitHub Actions)
+
+- Workflow em `.github/workflows/ci.yml`, disparado em `push` e `pull_request`
+  para as branches `main` e `dev`.
+- Roda, nesta ordem, sobre a versão de Python fixada em `.python-version`:
+  `poetry install --with dev`, `poetry run task lint`,
+  `poetry run task format-check`, `poetry run task test` (com a cobertura
+  mínima de 50%, seção 10) e `poetry run task docs` (build `--strict`).
+- Qualquer alteração que quebre lint, formatação, testes/cobertura ou o build
+  da documentação falha a CI — corrija localmente com os mesmos comandos antes
+  de abrir/atualizar um PR.
+- Ao adicionar uma dependência necessária apenas para lint/testes/docs, ela vai
+  no grupo `dev` (seção 6), já instalado pela CI; grupos `notebooks` e
+  `dashboard` não são instalados na CI (nenhum teste depende deles).
 
 ## 15. Regras que a IA deve seguir (resumo — não negociável)
 
