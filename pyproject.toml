@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "f1"
+version = "0.1.0"
+description = ""
+authors = ["erickdouglas2603-gif <erick.douglas2603@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "f1", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.34.2"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.16"
+pytest = "^8.3"
+pytest-cov = "^5.0"
+mkdocs = "^1.6"
+mkdocs-material = "^9.5"
+mkdocstrings = {extras = ["python"], version = "^1.0.6"}
+taskipy = "^1.14.1"
+
+[tool.poetry.group.notebooks.dependencies]
+jupyter = "^1.1.1"
+matplotlib = "^3.11.2"
+
+[tool.poetry.group.dashboard.dependencies]
+streamlit = "^1.63.0"
+
+[tool.taskipy.tasks]
+test = "pytest"
+lint = "ruff check ."
+format = "ruff format ."
+docs = "mkdocs build --strict"
+docs-serve = "mkdocs serve"
+dashboard = "streamlit run dashboard/app.py"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=src/f1 --cov-report=term-missing --cov-fail-under=50"
+
+[tool.coverage.run]
+source = ["src/f1"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

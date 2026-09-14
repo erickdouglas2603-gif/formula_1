@@ -1,0 +1,44 @@
+site_name: F1 Data Engineering
+site_description: Projeto de engenharia de dados sobre a Fórmula 1 (OpenF1 API)
+repo_url: https://github.com/erickdouglas2603-gif/formula_1
+docs_dir: docs
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - scheme: default
+      primary: red
+      toggle:
+        icon: material/brightness-7
+        name: Modo escuro
+    - scheme: slate
+      primary: red
+      toggle:
+        icon: material/brightness-4
+        name: Modo claro
+
+nav:
+  - Início: index.md
+  - API OpenF1: api.md
+  - Configuração e Cliente: client.md
+  - Pipeline de extração: pipeline.md
+  - Dashboard: dashboard.md
+  - Referência de código: reference.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+            docstring_style: google
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
